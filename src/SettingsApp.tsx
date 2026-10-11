@@ -5,7 +5,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { AlertCircle, CheckCircle2, ChevronRight, RefreshCw } from "lucide-react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { api, onDeviceLink, onSettingsShown, onSyncState } from "./lib/api";
+import { api, onDeviceLink, onSettingsShown, onSettingsUpdated, onSyncState } from "./lib/api";
+import { useThemePreference } from "./state/ThemeContext";
 import { formatInvokeError } from "./lib/errors";
 import { extraRootsLoadPatch } from "./lib/extraRoots";
 import {
@@ -15,6 +16,7 @@ import {
   QuotaProduct,
   RateLimitProvider,
   SyncState,
+  ThemePreference,
   ZCodeCredentialStatus,
   ZCodeQuotaRegion,
 } from "./lib/types";
@@ -23,6 +25,7 @@ import { compactQuotaStatus, isZCodeConfigured, quotaProductStatusText } from ".
 import { ProviderIcon } from "./components/ProviderIcon";
 
 export function SettingsApp() {
+  const theme = useThemePreference();
   const [status, setStatus] = useState<AppStatus | null>(null);
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [syncState, setSyncState] = useState<SyncState>({ status: "idle" });
@@ -87,6 +90,7 @@ export function SettingsApp() {
 
     void reload();
     const subs = [
+      onSettingsUpdated(setSettings),
       onSyncState(setSyncState),
       onSettingsShown(() => {
         void reload();
@@ -311,7 +315,7 @@ export function SettingsApp() {
   return (
     <div
       className="h-screen overflow-hidden font-sans text-[13px]"
-      style={{ background: "#1C1C1E", color: "#E8E8E8" }}
+      style={{ background: "var(--color-settings)", color: "var(--color-t-primary)" }}
     >
       <div className="no-scrollbar mx-auto flex h-full max-w-[430px] flex-col gap-4 overflow-y-auto px-4 py-4">
         {/* 数据同步 — account key plus sync health; the former standalone
@@ -320,7 +324,7 @@ export function SettingsApp() {
           <Row label="API Key">
             <div className="flex flex-col items-end gap-1.5">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-xs" style={{ color: "#808080" }}>
+                <span className="font-mono text-xs" style={{ color: "var(--color-t-muted)" }}>
                   {status?.apiKeyDisplay ?? "未配置"}
                 </span>
                 <SmallButton disabled={isRelinking} onClick={() => void relink()}>
@@ -329,36 +333,36 @@ export function SettingsApp() {
                 {isRelinking && <SmallButton onClick={cancelRelink}>取消</SmallButton>}
               </div>
               {relinkUserCode && (
-                <span className="font-mono text-xs" style={{ color: "#9E9E9E" }}>
+                <span className="font-mono text-xs" style={{ color: "var(--color-t-muted)" }}>
                   验证码: {relinkUserCode}
                 </span>
               )}
               {relinkError && (
-                <span className="max-w-[280px] text-xs text-red-400">{relinkError}</span>
+                <span className="max-w-[280px] text-xs text-danger">{relinkError}</span>
               )}
             </div>
           </Row>
           <Row label="同步状态">
             <div className="flex flex-col items-end gap-0.5">
-              <span className="flex items-center gap-1 text-xs" style={{ color: "#B0B0B0" }}>
+              <span className="flex items-center gap-1 text-xs" style={{ color: "var(--color-t-secondary)" }}>
                 {syncState.status === "syncing" ? (
                   <>
                     <div className="spinner h-3 w-3" /> 同步中...
                   </>
                 ) : syncState.status === "error" ? (
                   <>
-                    <AlertCircle size={13} color="#EF4444" />
+                    <AlertCircle size={13} color="var(--color-danger)" />
                     <span className="max-w-[260px] truncate">{syncState.message ?? "错误"}</span>
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 size={13} color="#34C759" />
+                    <CheckCircle2 size={13} color="var(--color-cost)" />
                     {syncState.status === "success" ? "同步成功" : "正常"}
                   </>
                 )}
               </span>
               {syncState.lastSyncAt && (
-                <span className="text-[11px]" style={{ color: "#9E9E9E" }}>
+                <span className="text-[11px]" style={{ color: "var(--color-t-muted)" }}>
                   上次同步 {formatRelativeTime(new Date(syncState.lastSyncAt))}
                 </span>
               )}
@@ -398,12 +402,12 @@ export function SettingsApp() {
                     size={12}
                     strokeWidth={2.5}
                     className="shrink-0 transition-transform duration-150"
-                    style={{ color: "#8C8C8C", transform: isZCodeExpanded ? "rotate(90deg)" : undefined }}
+                    style={{ color: "var(--color-t-muted)", transform: isZCodeExpanded ? "rotate(90deg)" : undefined }}
                   />
                   <ProviderIcon provider="zcode" />
                   <span className="flex min-w-0 flex-col">
                     <span className="text-[13px]">{zCodeProduct.displayName}</span>
-                    <span className="truncate text-[10.5px]" style={{ color: "#8C8C8C" }}>
+                    <span className="truncate text-[10.5px]" style={{ color: "var(--color-t-muted)" }}>
                       {compactQuotaStatus(
                         quotaProductStatusText(
                           zCodeProduct,
@@ -430,7 +434,7 @@ export function SettingsApp() {
                     value={settings?.zCodeQuotaRegion ?? "bigModel"}
                     disabled={!settings || quotaBusy}
                     onChange={(event) => void setZCodeRegion(event.target.value as ZCodeQuotaRegion)}
-                    className="w-full rounded bg-[#48484A] px-2 py-1 text-xs text-white outline-none disabled:opacity-50"
+                    className="w-full rounded bg-button px-2 py-1 text-xs text-t-primary outline-none disabled:opacity-50"
                   >
                     <option value="bigModel">BigModel 国内</option>
                     <option value="zAI">Z.ai 海外</option>
@@ -443,7 +447,7 @@ export function SettingsApp() {
                       autoComplete="off"
                       placeholder={zCodeConfigured ? "新 Key" : "输入 Coding Plan API Key"}
                       onChange={(event) => setZCodeApiKey(event.target.value)}
-                      className="min-w-0 grow rounded-md border border-white/10 bg-[#1C1C1E] px-2.5 py-1.5 font-mono text-xs text-white outline-none focus:border-white/25 disabled:opacity-50"
+                      className="min-w-0 grow rounded-md border border-input-border bg-input px-2.5 py-1.5 font-mono text-xs text-t-primary outline-none focus:border-focus disabled:opacity-50"
                     />
                     <SmallButton
                       disabled={!zCodeApiKey.trim() || quotaBusy}
@@ -454,17 +458,17 @@ export function SettingsApp() {
                     {zCodeConfigured && (
                       <button
                         disabled={quotaBusy}
-                        className="shrink-0 text-xs text-red-400 disabled:opacity-50"
+                        className="shrink-0 text-xs text-danger disabled:opacity-50"
                         onClick={() => void removeZCodeApiKey()}
                       >
                         移除
                       </button>
                     )}
                   </div>
-                  <span className="text-[10.5px]" style={{ color: "#8C8C8C" }}>
+                  <span className="text-[10.5px]" style={{ color: "var(--color-t-muted)" }}>
                     只使用这里填写的区域 Key，不读取 ZCode 登录凭据。
                   </span>
-                  {zCodeMessage && <span className="text-[11px] text-emerald-400">{zCodeMessage}</span>}
+                  {zCodeMessage && <span className="text-[11px] text-cost">{zCodeMessage}</span>}
                 </div>
               )}
             </div>
@@ -475,14 +479,14 @@ export function SettingsApp() {
             expanded={isQuotaSourcesExpanded}
             onToggle={() => setQuotaSourcesExpanded((value) => !value)}
           >
-            <p className="text-[10.5px] leading-relaxed" style={{ color: "#8C8C8C" }}>
+            <p className="text-[10.5px] leading-relaxed" style={{ color: "var(--color-t-muted)" }}>
               检测状态仅用于推荐，所有产品都可手动选择；未选择的产品不会联网读取配额。
             </p>
-            <p className="text-[10.5px] leading-relaxed" style={{ color: "#8C8C8C" }}>
+            <p className="text-[10.5px] leading-relaxed" style={{ color: "var(--color-t-muted)" }}>
               Grok 仅从官方 CLI 普通日志读取结构化订阅配额；Cursor 可单独选择并等待官方配额接口，不读取
               Cookie、登录 Token 或其他应用凭据。
             </p>
-            <p className="text-[10.5px] leading-relaxed" style={{ color: "#8C8C8C" }}>
+            <p className="text-[10.5px] leading-relaxed" style={{ color: "var(--color-t-muted)" }}>
               Kimi Code 使用其官方 CLI 登录。
             </p>
             <div className="flex justify-end">
@@ -494,12 +498,26 @@ export function SettingsApp() {
             </div>
           </Disclosure>
 
-          {quotaError && <div className="px-3 py-2 text-xs text-red-400">{quotaError}</div>}
+          {quotaError && <div className="px-3 py-2 text-xs text-danger">{quotaError}</div>}
         </Section>
 
         {/* 常规 — tray and startup preferences cover the same subject: how the
             app behaves outside this window. */}
         <Section title="常规">
+          <Row label="外观">
+            <select
+              aria-label="外观主题"
+              value={theme.preference}
+              disabled={theme.saving}
+              onChange={(event) => void theme.setPreference(event.target.value as ThemePreference)}
+              className="rounded-md bg-button px-2.5 py-1 text-xs text-t-primary disabled:opacity-50"
+            >
+              <option value="system">跟随系统</option>
+              <option value="light">浅色</option>
+              <option value="dark">深色</option>
+            </select>
+          </Row>
+          {theme.error && <div role="alert" className="px-3 py-2 text-xs text-danger">{theme.error}</div>}
           <Row label="托盘显示费用">
             <Toggle
               checked={settings?.showCostInTray ?? true}
@@ -542,13 +560,13 @@ export function SettingsApp() {
                   <div key={path} className="flex min-w-0 items-center gap-2">
                     <span
                       className="min-w-0 flex-1 truncate font-mono text-[11px]"
-                      style={{ color: "#8C8C8C" }}
+                      style={{ color: "var(--color-t-muted)" }}
                       title={path}
                     >
                       {path}
                     </span>
                     <button
-                      className="shrink-0 text-xs text-red-400 disabled:opacity-50"
+                      className="shrink-0 text-xs text-danger disabled:opacity-50"
                       disabled={extraRootsBusy}
                       onClick={() => void removeExtraRoot(source, path)}
                     >
@@ -558,10 +576,10 @@ export function SettingsApp() {
                 ))}
               </div>
             ))}
-            <p className="text-[10.5px] leading-relaxed" style={{ color: "#8C8C8C" }}>
+            <p className="text-[10.5px] leading-relaxed" style={{ color: "var(--color-t-muted)" }}>
               可为每种工具添加多个 Multica 或其他隔离目录；默认目录仍会照常统计。
             </p>
-            {extraRootsError && <span className="text-xs text-red-400">{extraRootsError}</span>}
+            {extraRootsError && <span className="text-xs text-danger">{extraRootsError}</span>}
           </Disclosure>
         </Section>
 
@@ -570,7 +588,7 @@ export function SettingsApp() {
             <Row label="外测日志">
               <div className="flex items-center gap-2">
                 {diagnosticMessage && (
-                  <span className="max-w-[190px] truncate text-[11px] text-neutral-400">
+                  <span className="max-w-[190px] truncate text-[11px] text-t-muted">
                     {diagnosticMessage}
                   </span>
                 )}
@@ -583,21 +601,21 @@ export function SettingsApp() {
         {/* 关于 */}
         <Section title="关于">
           <Row label="版本">
-            <span className="text-xs" style={{ color: "#9E9E9E" }}>
+            <span className="text-xs" style={{ color: "var(--color-t-muted)" }}>
               {status?.version ?? ""}
             </span>
           </Row>
           <Row label="检查更新">
             <div className="flex items-center gap-2">
               {updateMessage && (
-                <span className="text-xs" style={{ color: "#9E9E9E" }}>
+                <span className="text-xs" style={{ color: "var(--color-t-muted)" }}>
                   {updateMessage}
                 </span>
               )}
               {status?.updatesAvailable ? (
                 <SmallButton onClick={() => void checkUpdate()}>检查更新</SmallButton>
               ) : status ? (
-                <span className="text-xs text-neutral-400">外测版不检查更新</span>
+                <span className="text-xs text-t-muted">外测版不检查更新</span>
               ) : null}
             </div>
           </Row>
@@ -607,19 +625,19 @@ export function SettingsApp() {
         <Section title="危险操作">
           {!showResetConfirm ? (
             <Row label="">
-              <button className="text-[13px] text-red-400" onClick={() => setShowResetConfirm(true)}>
+              <button className="text-[13px] text-danger" onClick={() => setShowResetConfirm(true)}>
                 重置配置
               </button>
             </Row>
           ) : (
             <div className="flex flex-col gap-2 px-3 py-2.5">
-              <span className="text-xs" style={{ color: "#B0B0B0" }}>
+              <span className="text-xs" style={{ color: "var(--color-t-secondary)" }}>
                 确定要重置配置吗？这将清除 API Key 并停止自动同步。
               </span>
               <div className="flex justify-end gap-2">
                 <SmallButton onClick={() => setShowResetConfirm(false)}>取消</SmallButton>
                 <button
-                  className="rounded-md bg-red-500 px-3 py-1 text-xs font-medium text-white"
+                  className="rounded-md bg-danger px-3 py-1 text-xs font-medium text-on-danger"
                   onClick={() => void resetConfig()}
                 >
                   重置
@@ -645,18 +663,18 @@ function Section({
   return (
     <div className="flex flex-col gap-1.5">
       {title && (
-        <span className="px-2 text-xs font-medium" style={{ color: "#8C8C8C" }}>
+        <span className="px-2 text-xs font-medium" style={{ color: "var(--color-t-muted)" }}>
           {title}
         </span>
       )}
       <div
-        className="flex flex-col divide-y rounded-[10px]"
-        style={{ background: "#2A2A2C", borderColor: "#3A3A3C" }}
+        className="flex flex-col divide-y divide-[var(--color-settings-border)] rounded-[10px]"
+        style={{ background: "var(--color-settings-panel)", borderColor: "var(--color-settings-border)" }}
       >
         {children}
       </div>
       {footer && (
-        <span className="px-2 text-[11px]" style={{ color: "#737373" }}>
+        <span className="px-2 text-[11px]" style={{ color: "var(--color-t-tertiary)" }}>
           {footer}
         </span>
       )}
@@ -685,7 +703,7 @@ function ProductRow({
         <ProviderIcon provider={product.provider} />
         <span className="flex min-w-0 flex-col">
           <span className="text-[13px]">{product.displayName}</span>
-          <span className="truncate text-[10.5px]" style={{ color: "#8C8C8C" }}>
+          <span className="truncate text-[10.5px]" style={{ color: "var(--color-t-muted)" }}>
             {statusText}
           </span>
         </span>
@@ -721,12 +739,12 @@ function Disclosure({
           size={12}
           strokeWidth={2.5}
           className="shrink-0 transition-transform duration-150"
-          style={{ color: "#8C8C8C", transform: expanded ? "rotate(90deg)" : undefined }}
+          style={{ color: "var(--color-t-muted)", transform: expanded ? "rotate(90deg)" : undefined }}
         />
         <span className="shrink-0 text-[13px]">{label}</span>
         <span className="grow" />
         {summary && (
-          <span className="min-w-0 truncate text-[11px]" style={{ color: "#8C8C8C" }} title={summary}>
+          <span className="min-w-0 truncate text-[11px]" style={{ color: "var(--color-t-muted)" }} title={summary}>
             {summary}
           </span>
         )}
@@ -740,7 +758,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   return (
     <div
       className="flex min-h-[38px] items-center justify-between gap-3 px-3 py-1.5"
-      style={{ borderColor: "#3A3A3C" }}
+      style={{ borderColor: "var(--color-settings-border)" }}
     >
       <span className="shrink-0 text-[13px]">{label}</span>
       {children}
@@ -764,10 +782,10 @@ function Toggle({
       disabled={disabled}
       onClick={() => onChange(!checked)}
       className="relative h-[22px] w-[38px] shrink-0 rounded-full transition-colors duration-150 disabled:opacity-50"
-      style={{ background: checked ? "#34C759" : "#48484A" }}
+      style={{ background: checked ? "var(--color-toggle-on)" : "var(--color-button)" }}
     >
       <span
-        className="absolute top-[2px] h-[18px] w-[18px] rounded-full bg-white shadow transition-all duration-150"
+        className="absolute top-[2px] h-[18px] w-[18px] rounded-full bg-toggle-thumb shadow transition-all duration-150"
         style={{ left: checked ? 18 : 2 }}
       />
     </button>
@@ -788,7 +806,7 @@ function SmallButton({
       disabled={disabled}
       onClick={onClick}
       className="rounded-md px-2.5 py-1 text-xs disabled:opacity-50"
-      style={{ background: "#48484A", color: "#E8E8E8" }}
+      style={{ background: "var(--color-button)", color: "var(--color-t-primary)" }}
     >
       {children}
     </button>

@@ -292,9 +292,9 @@ export function elapsedPercent(w: RateLimitWindow, now: Date = new Date()): numb
   return Math.min(100, (elapsed / w.windowDuration) * 100);
 }
 
-/** Progress-bar color tier — mirrors ProgressBar.color(for:) */
+/** Semantic tiers resolve in CSS so bars and percentage labels switch together. */
 export function utilizationColor(utilization: number): string {
-  if (utilization < 70) return "#D9D9D9"; // Color(white: 0.85)
-  if (utilization < 90) return "#F59E0B";
-  return "#F04545";
+  if (utilization < 70) return "var(--color-quota-normal)";
+  if (utilization < 90) return "var(--color-quota-warn)";
+  return "var(--color-quota-critical)";
 }

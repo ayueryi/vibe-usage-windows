@@ -70,7 +70,7 @@ export function OnboardingView() {
   return (
     <div className="flex flex-col gap-3 rounded-card border border-card-border bg-card p-3">
       <div className="flex flex-col gap-1">
-        <span className="text-[13px] font-semibold text-white">用量统计（可选）</span>
+        <span className="text-[13px] font-semibold text-t-primary">用量统计（可选）</span>
         <span className="text-[11px] leading-relaxed text-t-muted">
           登录 Vibe Usage 后可同步 Token 与查看统计；不影响上方订阅配额。
         </span>
@@ -79,27 +79,27 @@ export function OnboardingView() {
           <>
             <div
               className="flex items-start gap-2 rounded-card border border-card-border px-2.5 py-2"
-              style={{ background: "#0F0F0F" }}
+              style={{ background: "var(--color-inset)" }}
             >
-              <Info size={12} color="#808080" className="mt-0.5 shrink-0" />
-              <span className="text-xs" style={{ color: "#B3B3B3" }}>
+              <Info size={12} color="var(--color-t-muted)" className="mt-0.5 shrink-0" />
+              <span className="text-xs" style={{ color: "var(--color-t-secondary)" }}>
                 请确认浏览器中显示的验证码与下方一致
               </span>
             </div>
 
             <div className="flex flex-col gap-1.5">
               <span className="text-[10px] font-medium uppercase text-t-muted">验证码</span>
-              <span className="font-mono text-[22px] font-semibold tracking-[3px] text-white">
+              <span className="font-mono text-[22px] font-semibold tracking-[3px] text-t-primary">
                 {pendingUserCode}
               </span>
             </div>
           </>
         )}
 
-        {setupError && <div className="text-xs text-red-500">{setupError}</div>}
+        {setupError && <div className="text-xs text-danger">{setupError}</div>}
 
         <button
-          className="flex w-full items-center justify-center gap-1.5 rounded-md bg-white py-2 text-[13px] font-medium text-black disabled:opacity-80"
+          className="flex w-full items-center justify-center gap-1.5 rounded-md bg-action py-2 text-[13px] font-medium text-on-action disabled:opacity-80"
           disabled={flowState === "awaitingApproval"}
           onClick={() => void startFlow()}
         >
@@ -110,7 +110,7 @@ export function OnboardingView() {
         {flowState === "awaitingApproval" && (
           <button
             className="w-full py-1.5 text-xs font-medium"
-            style={{ color: "#999999" }}
+            style={{ color: "var(--color-t-muted)" }}
             onClick={cancelFlow}
           >
             取消，重新开始

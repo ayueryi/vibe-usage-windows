@@ -10,6 +10,7 @@ import {
   QuotaProduct,
   RateLimitProvider,
   SyncState,
+  ThemePreference,
   UpdateInfo,
   UsageQuery,
   UsageResponse,
@@ -48,6 +49,8 @@ export const api = {
 
   // Settings ------------------------------------------------------------------
   getSettings: () => invoke<AppSettings>("get_settings"),
+  setThemePreference: (preference: ThemePreference) =>
+    invoke<void>("set_theme_preference", { preference }),
   setSettings: (settings: AppSettings) => invoke<void>("set_settings", { settings }),
   getLaunchAtLogin: () => invoke<boolean>("get_launch_at_login"),
   setLaunchAtLogin: (enabled: boolean) => invoke<void>("set_launch_at_login", { enabled }),
@@ -93,6 +96,11 @@ export function onUpdateAvailable(handler: (u: UpdateInfo) => void): Promise<Unl
 
 export function onSettingsUpdated(handler: (settings: AppSettings) => void): Promise<UnlistenFn> {
   return listen<AppSettings>("settings-updated", (e) => handler(e.payload));
+}
+
+/** Appearance changes do not invalidate quota snapshots or trigger refreshes. */
+export function onThemeUpdated(handler: (preference: ThemePreference) => void): Promise<UnlistenFn> {
+  return listen<ThemePreference>("theme-updated", (e) => handler(e.payload));
 }
 
 /** Fired whenever the already-loaded settings window is made visible. */

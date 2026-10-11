@@ -5,6 +5,8 @@ import "./styles/globals.css";
 import { PopoverApp } from "./PopoverApp";
 import { SettingsApp } from "./SettingsApp";
 import { AppStateProvider } from "./state/AppStateContext";
+import { ThemeProvider } from "./state/ThemeContext";
+import { applyTheme, cachedThemePreference } from "./lib/theme";
 
 // Single HTML entry. Packaged Tauri windows route by label; the query param is
 // kept as a lightweight browser/dev fallback.
@@ -20,22 +22,27 @@ function getWindowRoute() {
 }
 
 const route = getWindowRoute();
+document.documentElement.dataset.window = route;
+applyTheme(cachedThemePreference(), matchMedia("(prefers-color-scheme: dark)").matches);
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
 if (route === "settings") {
-  document.body.style.background = "#1C1C1E";
   root.render(
     <React.StrictMode>
-      <SettingsApp />
+      <ThemeProvider>
+        <SettingsApp />
+      </ThemeProvider>
     </React.StrictMode>,
   );
 } else {
   root.render(
     <React.StrictMode>
-      <AppStateProvider>
-        <PopoverApp />
-      </AppStateProvider>
+      <ThemeProvider>
+        <AppStateProvider>
+          <PopoverApp />
+        </AppStateProvider>
+      </ThemeProvider>
     </React.StrictMode>,
   );
 }

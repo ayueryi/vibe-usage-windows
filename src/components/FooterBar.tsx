@@ -17,13 +17,13 @@ export function FooterBar() {
       {/* Sync status */}
       <div className="flex min-w-0 items-center gap-1.5">
         {!state.configured ? (
-          <CheckCircle2 size={12} color="#33CC80" fill="#33CC80" stroke="#0A0A0A" className="shrink-0" />
+          <CheckCircle2 size={12} color="var(--color-cost)" fill="var(--color-cost)" stroke="var(--color-app)" className="shrink-0" />
         ) : syncing ? (
           <div className="spinner h-3 w-3 shrink-0" />
         ) : syncState.status === "error" ? (
-          <AlertCircle size={12} color="#EF4444" fill="#EF4444" stroke="#0A0A0A" className="shrink-0" />
+          <AlertCircle size={12} color="var(--color-danger)" fill="var(--color-danger)" stroke="var(--color-app)" className="shrink-0" />
         ) : (
-          <CheckCircle2 size={12} color="#33CC80" fill="#33CC80" stroke="#0A0A0A" className="shrink-0" />
+          <CheckCircle2 size={12} color="var(--color-cost)" fill="var(--color-cost)" stroke="var(--color-app)" className="shrink-0" />
         )}
         <span className="min-w-0 truncate text-[11px] text-t-tertiary">
           {!state.configured

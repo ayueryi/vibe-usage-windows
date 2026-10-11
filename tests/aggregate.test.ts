@@ -189,9 +189,9 @@ describe("rate-limit helpers", () => {
   });
 
   it("utilizationColor tiers", () => {
-    expect(utilizationColor(10)).toBe("#D9D9D9");
-    expect(utilizationColor(70)).toBe("#F59E0B");
-    expect(utilizationColor(90)).toBe("#F04545");
+    expect(utilizationColor(10)).toBe("var(--color-quota-normal)");
+    expect(utilizationColor(70)).toBe("var(--color-quota-warn)");
+    expect(utilizationColor(90)).toBe("var(--color-quota-critical)");
   });
 });
 

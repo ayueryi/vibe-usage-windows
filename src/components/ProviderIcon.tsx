@@ -56,5 +56,5 @@ export function ProviderIcon({
     );
   }
   const Fallback = FALLBACKS[provider];
-  return <Fallback size={size - 1} color="#999999" className="shrink-0" />;
+  return <Fallback size={size - 1} color="var(--color-t-muted)" className="shrink-0" />;
 }

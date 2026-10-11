@@ -12,12 +12,23 @@ use vibe_core::{ProviderRateLimit, RateLimitProvider};
 
 pub const IS_DEV: bool = cfg!(debug_assertions);
 
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ThemePreference {
+    Light,
+    Dark,
+    #[default]
+    #[serde(other)]
+    System,
+}
+
 /// Persisted app settings — counterpart of the macOS UserDefaults keys
 /// (showCostInMenuBar / showTokensInMenuBar / codexRateLimitEnabled /
 /// claudeRateLimitEnabled).
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", default)]
 pub struct AppSettings {
+    pub theme_preference: ThemePreference,
     pub show_cost_in_tray: bool,
     pub show_tokens_in_tray: bool,
     pub codex_rate_limit_enabled: bool,
@@ -30,6 +41,7 @@ pub struct AppSettings {
 impl Default for AppSettings {
     fn default() -> Self {
         Self {
+            theme_preference: ThemePreference::System,
             show_cost_in_tray: true,
             show_tokens_in_tray: false,
             codex_rate_limit_enabled: true,
@@ -204,10 +216,25 @@ impl AppCtx {
     }
 
     pub fn save_settings(&self) {
-        let settings = self.settings.lock().unwrap().clone();
-        if let Ok(data) = serde_json::to_string_pretty(&settings) {
+        // Serialize writes with the appearance patch as well as in-memory changes.
+        // An older quota/tray snapshot must not overwrite a newer theme on disk.
+        let settings = self.settings.lock().unwrap();
+        if let Ok(data) = serde_json::to_string_pretty(&*settings) {
             let _ = vibe_core::config::atomic_write(&self.settings_path, data.as_bytes());
         }
+    }
+
+    /// Patch only appearance so a concurrent quota/tray update cannot be lost.
+    /// Persist before publishing; a failed write leaves the active theme intact.
+    pub fn set_theme_preference(&self, preference: ThemePreference) -> Result<AppSettings, String> {
+        let mut current = self.settings.lock().unwrap();
+        let mut next = current.clone();
+        next.theme_preference = preference;
+        let data = serde_json::to_vec_pretty(&next).map_err(|error| error.to_string())?;
+        vibe_core::config::atomic_write(&self.settings_path, &data)
+            .map_err(|error| error.to_string())?;
+        *current = next.clone();
+        Ok(next)
     }
 
     pub fn hostname() -> Option<String> {
@@ -225,6 +252,44 @@ impl AppCtx {
 mod tests {
     use super::*;
     use std::fs;
+
+    #[test]
+    fn legacy_and_unknown_theme_preferences_follow_system() {
+        for json in [r#"{}"#, r#"{"themePreference":"unknown"}"#] {
+            let settings: AppSettings = serde_json::from_str(json).unwrap();
+            assert_eq!(settings.theme_preference, ThemePreference::System);
+        }
+    }
+
+    #[test]
+    fn theme_patch_survives_restart_and_preserves_other_preferences() {
+        let directory = tempfile::tempdir().unwrap();
+        let ctx = AppCtx::new(directory.path().to_path_buf());
+        ctx.settings.lock().unwrap().show_tokens_in_tray = true;
+        for preference in [
+            ThemePreference::Light,
+            ThemePreference::Dark,
+            ThemePreference::System,
+        ] {
+            ctx.set_theme_preference(preference).unwrap();
+            let saved: AppSettings =
+                serde_json::from_slice(&fs::read(&ctx.settings_path).unwrap()).unwrap();
+            assert_eq!(saved.theme_preference, preference);
+            assert!(saved.show_tokens_in_tray);
+        }
+    }
+
+    #[test]
+    fn theme_write_failure_preserves_active_preference() {
+        let directory = tempfile::tempdir().unwrap();
+        let ctx = AppCtx::new(directory.path().to_path_buf());
+        fs::create_dir(&ctx.settings_path).unwrap();
+        assert!(ctx.set_theme_preference(ThemePreference::Light).is_err());
+        assert_eq!(
+            ctx.settings.lock().unwrap().theme_preference,
+            ThemePreference::System
+        );
+    }
 
     #[test]
     fn region_or_key_change_discards_cached_and_in_flight_zcode_results() {

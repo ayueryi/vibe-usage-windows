@@ -84,6 +84,7 @@ pub fn run() {
             commands::set_zcode_api_key,
             commands::get_settings,
             commands::set_settings,
+            commands::set_theme_preference,
             commands::get_launch_at_login,
             commands::set_launch_at_login,
             commands::get_extra_roots,

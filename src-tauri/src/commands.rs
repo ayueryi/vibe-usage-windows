@@ -5,7 +5,7 @@ use crate::services::{
     auto_launch, device_link, rate_limits, scheduler, sync_engine, test_diagnostics, updater,
     zcode_credentials,
 };
-use crate::state::{AppCtx, AppSettings, SyncState, UpdateInfo};
+use crate::state::{AppCtx, AppSettings, SyncState, ThemePreference, UpdateInfo};
 use serde::Serialize;
 use serde_json::Value;
 use tauri::{AppHandle, Emitter, Manager, WebviewUrl, WebviewWindowBuilder};
@@ -314,6 +314,9 @@ pub fn set_settings(app: AppHandle, mut settings: AppSettings) {
     {
         let ctx = app.state::<AppCtx>();
         let mut current = ctx.settings.lock().unwrap();
+        // Appearance has its own atomic patch command. Stale dashboard/settings
+        // snapshots must not undo a more recent theme selection.
+        settings.theme_preference = current.theme_preference;
         if current.z_code_quota_region != settings.z_code_quota_region {
             ctx.rate_limits.lock().unwrap().invalidate_zcode();
         }
@@ -329,6 +332,13 @@ pub fn set_settings(app: AppHandle, mut settings: AppSettings) {
 #[tauri::command]
 pub fn get_launch_at_login() -> Result<bool, String> {
     auto_launch::get()
+}
+
+#[tauri::command]
+pub fn set_theme_preference(app: AppHandle, preference: ThemePreference) -> Result<(), String> {
+    app.state::<AppCtx>().set_theme_preference(preference)?;
+    let _ = app.emit("theme-updated", preference);
+    Ok(())
 }
 
 #[tauri::command]

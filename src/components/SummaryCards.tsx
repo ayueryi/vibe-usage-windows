@@ -35,7 +35,7 @@ export function SummaryCards() {
       <StatCard
         label="预估费用"
         value={currencyMode === "usd" ? formatCost(totals.totalCost) : formatCnyCost(totals.totalCost)}
-        color="#33CC80"
+        color="var(--color-cost)"
         onClick={() => setCurrencyMode((mode) => (mode === "usd" ? "cny" : "usd"))}
         pressed={currencyMode === "cny"}
         title={`点击切换美元/人民币；精确值：${formatCost(totals.totalCost)}`}
@@ -60,7 +60,7 @@ export function SummaryCards() {
       <StatCard
         label="活跃时长"
         value={formatDuration(totals.totalActiveSeconds)}
-        color="#6199FF"
+        color="var(--color-active)"
       />
     </div>
   );
@@ -69,7 +69,7 @@ export function SummaryCards() {
 function StatCard({
   label,
   value,
-  color = "#FFFFFF",
+  color = "var(--color-t-primary)",
   onClick,
   pressed,
   title,
@@ -86,7 +86,7 @@ function StatCard({
   const className = [
     "min-w-0 flex-1 rounded-card border border-card-border bg-card px-[11px] py-[13px] text-left",
     onClick &&
-      "cursor-pointer transition-colors hover:border-[#3A3A3A] active:bg-[#1D1D1D] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/20",
+      "cursor-pointer transition-colors hover:border-hover-border active:bg-pressed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus",
   ]
     .filter(Boolean)
     .join(" ");

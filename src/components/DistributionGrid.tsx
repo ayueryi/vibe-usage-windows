@@ -67,7 +67,7 @@ function DonutCard({
     <div className="flex flex-col gap-2.5 rounded-card border border-card-border bg-card p-[14px]">
       <div className="flex items-center">
         <div className="flex min-w-0 grow items-center gap-[5px]">
-          <Icon size={11} color="#808080" className="shrink-0" />
+          <Icon size={11} color="var(--color-t-muted)" className="shrink-0" />
           <span className="truncate text-[13px] font-medium text-t-secondary">{title}</span>
         </div>
         <MetricToggle mode={mode} setMode={setMode} />
@@ -90,9 +90,9 @@ function DonutCard({
                 <MiddleTruncateLabel
                   label={slice.label}
                   className="min-w-0 grow text-[11px]"
-                  style={{ color: "#B3B3B3" }}
+                  style={{ color: "var(--color-t-secondary)" }}
                 />
-                <span className="shrink-0 font-mono text-[11px]" style={{ color: "#8C8C8C" }}>
+                <span className="shrink-0 font-mono text-[11px]" style={{ color: "var(--color-t-muted)" }}>
                   {mode === "tokens" ? formatNumber(slice.tokens) : formatCost(slice.cost)}
                 </span>
                 <span
@@ -117,8 +117,8 @@ function MetricToggle({ mode, setMode }: { mode: MetricMode; setMode: (m: Metric
         onClick={() => setMode(m)}
         className="rounded-full px-[9px] py-[3px] text-[11px]"
         style={{
-          background: active ? "#474747" : "transparent",
-          color: active ? "#FFFFFF" : "#808080",
+          background: active ? "var(--color-selected)" : "transparent",
+          color: active ? "var(--color-t-primary)" : "var(--color-t-muted)",
           fontWeight: active ? 500 : 400,
         }}
       >
@@ -127,7 +127,7 @@ function MetricToggle({ mode, setMode }: { mode: MetricMode; setMode: (m: Metric
     );
   };
   return (
-    <div className="flex shrink-0 rounded-full p-0.5" style={{ background: "#292929", gap: 2 }}>
+    <div className="flex shrink-0 rounded-full p-0.5" style={{ background: "var(--color-segment)", gap: 2 }}>
       {btn("tokens", "Token")}
       {btn("cost", "费用")}
     </div>
@@ -165,7 +165,7 @@ function Donut({
   return (
     <div className="relative" style={{ width: DONUT_SIZE, height: DONUT_SIZE }}>
       <svg width={DONUT_SIZE} height={DONUT_SIZE}>
-        <circle cx={c} cy={c} r={r} fill="none" stroke="#292929" strokeWidth={STROKE_WIDTH} />
+        <circle cx={c} cy={c} r={r} fill="none" stroke="var(--color-segment)" strokeWidth={STROKE_WIDTH} />
         {segments.map(({ slice, offset, fraction }) => (
           <circle
             key={slice.label}
@@ -182,10 +182,10 @@ function Donut({
         ))}
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-px">
-        <span className="text-[9px]" style={{ color: "#737373" }}>
+        <span className="text-[9px]" style={{ color: "var(--color-t-tertiary)" }}>
           {mode === "tokens" ? "Tokens" : "预估"}
         </span>
-        <span className="max-w-[52px] truncate font-mono text-xs font-bold text-white">
+        <span className="max-w-[52px] truncate font-mono text-xs font-bold text-t-primary">
           {centerLabel}
         </span>
       </div>

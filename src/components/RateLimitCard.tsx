@@ -194,7 +194,7 @@ export function RateLimitCards() {
       )}
 
       {state.quotaSelectionError && (
-        <div className="text-[11px] text-red-400">{state.quotaSelectionError}</div>
+        <div className="text-[11px] text-danger">{state.quotaSelectionError}</div>
       )}
     </section>
   );
@@ -256,7 +256,7 @@ function ProviderCard({ snapshot }: { snapshot: ProviderRateLimit }) {
     <div className="flex h-full min-w-0 flex-col gap-2.5 rounded-card border border-card-border bg-card px-3 py-[11px]">
       <div className="flex items-center gap-1.5">
         <ProviderIcon provider={snapshot.provider} />
-        <span className="truncate text-[13px] font-semibold text-white">
+        <span className="truncate text-[13px] font-semibold text-t-primary">
           {providerLabel(snapshot.provider, state.quotaProducts)}
         </span>
         <div className="grow" />
@@ -264,7 +264,7 @@ function ProviderCard({ snapshot }: { snapshot: ProviderRateLimit }) {
         {snapshot.planLabel && (
           <span
             className="max-w-[80px] truncate rounded-full px-[7px] py-0.5 text-[10px] font-medium"
-            style={{ background: "rgba(255,255,255,0.16)", color: "#8C8C8C" }}
+            style={{ background: "var(--color-segment)", color: "var(--color-t-muted)" }}
           >
             {snapshot.planLabel}
           </span>
@@ -289,7 +289,7 @@ function ProviderCard({ snapshot }: { snapshot: ProviderRateLimit }) {
       {snapshot.status.kind === "ok" && foldedMeterCount > 0 && (
         <button
           type="button"
-          className="flex w-fit items-center gap-1 text-[10px] text-neutral-500 hover:text-neutral-300"
+          className="flex w-fit items-center gap-1 text-[10px] text-t-tertiary hover:text-t-secondary"
           aria-expanded={expanded}
           title={expanded ? "收起多余的配额窗口" : `展开全部 ${rows.length} 个配额窗口`}
           onClick={() => setExpanded((value) => !value)}
@@ -298,7 +298,7 @@ function ProviderCard({ snapshot }: { snapshot: ProviderRateLimit }) {
           {expanded ? <ChevronUp size={10} /> : <ChevronDown size={10} />}
         </button>
       )}
-      {snapshot.sourceLabel && <div className="text-[10px] text-neutral-400">{snapshot.sourceLabel}</div>}
+      {snapshot.sourceLabel && <div className="text-[10px] text-t-muted">{snapshot.sourceLabel}</div>}
       {snapshot.status.kind === "ok" && <FreshnessNote snapshot={snapshot} />}
     </div>
   );
@@ -335,7 +335,7 @@ function emptyStateText(snapshot: ProviderRateLimit, state: AppStateValue): stri
 }
 
 function QuietText({ text }: { text: string }) {
-  return <span className="text-[11px] leading-snug text-neutral-500">{text}</span>;
+  return <span className="text-[11px] leading-snug text-t-tertiary">{text}</span>;
 }
 
 function QuotaRows({ rows }: { rows: RowItem[] }) {
@@ -357,7 +357,7 @@ function QuotaRows({ rows }: { rows: RowItem[] }) {
           <EmptyQuotaRow key={`${row.label}-${index}`} label={row.label} message={row.message} />
         ),
       )}
-      {rows.length === 0 && <span className="text-[11px] text-neutral-500">暂无订阅配额数据</span>}
+      {rows.length === 0 && <span className="text-[11px] text-t-tertiary">暂无订阅配额数据</span>}
 
       {hovered && hoveredRow && hoveredWindow && (
         <TooltipLayer anchor={hovered.anchor}>
@@ -384,7 +384,7 @@ function QuotaRow({
     <div ref={rowRef} className="flex items-center gap-1.5" style={{ height: ROW_HEIGHT }}>
       <span
         className="w-10 shrink-0 truncate font-mono text-[11px] font-medium"
-        style={{ color: "#999999" }}
+        style={{ color: "var(--color-t-muted)" }}
         title={label}
       >
         {label}
@@ -399,8 +399,8 @@ function QuotaRow({
           <ProgressBar
             value={elapsed}
             height={3}
-            fill="rgba(255,255,255,0.42)"
-            background="rgba(255,255,255,0.14)"
+            fill="var(--color-elapsed-fill)"
+            background="var(--color-elapsed-track)"
           />
         )}
       </div>
@@ -417,10 +417,10 @@ function QuotaRow({
 function EmptyQuotaRow({ label, message }: { label: string; message: string }) {
   return (
     <div className="flex items-center gap-1.5" style={{ height: ROW_HEIGHT }}>
-      <span className="w-10 shrink-0 truncate font-mono text-[11px]" style={{ color: "#666666" }}>
+      <span className="w-10 shrink-0 truncate font-mono text-[11px]" style={{ color: "var(--color-t-tertiary)" }}>
         {label}
       </span>
-      <span className="min-w-0 grow truncate text-[11px] text-neutral-500">{message}</span>
+      <span className="min-w-0 grow truncate text-[11px] text-t-tertiary">{message}</span>
     </div>
   );
 }
@@ -433,14 +433,14 @@ function Tooltip({ label, window: quotaWindow }: { label: string; window: RateLi
       : null;
   return (
     <div
-      className="flex flex-col gap-[5px] whitespace-nowrap rounded-[5px] bg-black px-2.5 py-2 text-[11px] shadow-[0_2px_5px_rgba(0,0,0,0.5)]"
-      style={{ border: "0.5px solid #383838" }}
+      className="flex flex-col gap-[5px] whitespace-nowrap rounded-[5px] bg-tooltip px-2.5 py-2 text-[11px] shadow-[var(--shadow-tooltip)]"
+      style={{ border: "0.5px solid var(--color-card-border)" }}
     >
-      <span className="font-semibold text-white">{label}</span>
+      <span className="font-semibold text-t-primary">{label}</span>
       <span style={{ color: utilizationColor(quotaWindow.utilization) }}>
         已使用 {formatPercent(quotaWindow.utilization)}
       </span>
-      <span className="text-neutral-400">
+      <span className="text-t-muted">
         {elapsed != null && remaining != null
           ? `已过去 ${formatPercent(elapsed)} · 剩余 ${remaining}`
           : remaining != null
@@ -518,7 +518,7 @@ function FreshnessNote({ snapshot }: { snapshot: ProviderRateLimit }) {
     snapshot.resetCreditsCount ? `重置券 ×${snapshot.resetCreditsCount}` : null,
   ].filter(Boolean);
   if (notes.length === 0) return null;
-  return <div className="truncate text-[10px] text-neutral-500">{notes.join(" · ")}</div>;
+  return <div className="truncate text-[10px] text-t-tertiary">{notes.join(" · ")}</div>;
 }
 
 function MessageContent({ text }: { text: string }) {
@@ -528,7 +528,7 @@ function MessageContent({ text }: { text: string }) {
       <span className="min-w-0 grow text-[11px] leading-snug text-t-muted">{text}</span>
       <button
         className="shrink-0 rounded-full px-2.5 py-[3px] text-[11px]"
-        style={{ background: "rgba(255,255,255,0.16)", color: "#C7C7C7" }}
+        style={{ background: "var(--color-segment)", color: "var(--color-t-secondary)" }}
         onClick={() => void state.refreshRateLimits(true)}
       >
         重试
@@ -541,7 +541,7 @@ function ProgressBar({
   value,
   height,
   fill,
-  background = "rgba(255,255,255,0.18)",
+  background = "var(--color-track)",
 }: {
   value: number;
   height: number;

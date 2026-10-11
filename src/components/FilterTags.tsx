@@ -166,8 +166,8 @@ export function FilterTags() {
                 className="flex min-w-0 flex-1 items-center gap-1.5 rounded-full border px-[9px]"
                 style={{
                   height: FILTER_ROW_HEIGHT,
-                  background: highlight ? "#292929" : "#171717",
-                  borderColor: highlight ? "#424242" : "#262626",
+                  background: highlight ? "var(--color-segment)" : "var(--color-card)",
+                  borderColor: highlight ? "var(--color-hover-border)" : "var(--color-card-border)",
                   opacity: enabled ? 1 : 0.45,
                 }}
               >
@@ -175,17 +175,17 @@ export function FilterTags() {
                   size={11}
                   strokeWidth={2.25}
                   className="shrink-0"
-                  color={highlight ? "#FFFFFF" : "#949494"}
+                  color={highlight ? "var(--color-t-primary)" : "var(--color-t-muted)"}
                 />
                 <span
                   className="shrink-0 text-xs font-medium"
-                  style={{ color: highlight ? "#FFFFFF" : "#A8A8A8" }}
+                  style={{ color: highlight ? "var(--color-t-primary)" : "var(--color-t-secondary)" }}
                 >
                   {dim.label}
                 </span>
                 <span
                   className="min-w-0 truncate text-xs"
-                  style={{ color: isActive ? "#DBDBDB" : "#6B6B6B" }}
+                  style={{ color: isActive ? "var(--color-t-secondary)" : "var(--color-t-tertiary)" }}
                 >
                   {selected.size === 0 ? "全部" : `${selected.size} 项`}
                 </span>
@@ -193,7 +193,7 @@ export function FilterTags() {
                 <ChevronDown
                   size={8}
                   strokeWidth={3}
-                  color="#616161"
+                  color="var(--color-t-tertiary)"
                   className="shrink-0 transition-transform duration-150"
                   style={{ transform: isOpen ? "rotate(180deg)" : undefined }}
                 />
@@ -234,8 +234,8 @@ function TimeRangeSelector() {
             }}
             className="flex h-6 items-center rounded-full px-[9px] text-xs"
             style={{
-              background: isActive ? "rgba(255,255,255,0.20)" : "transparent",
-              color: isActive ? "#FFFFFF" : "#8A8A8A",
+              background: isActive ? "var(--color-selected)" : "transparent",
+              color: isActive ? "var(--color-t-primary)" : "var(--color-t-muted)",
               fontWeight: isActive ? 600 : 400,
             }}
           >
@@ -257,19 +257,19 @@ function CustomRangeControls() {
   };
 
   const inputStyle: React.CSSProperties = {
-    background: "#232323",
-    border: "1px solid #333333",
+    background: "var(--color-input)",
+    border: "1px solid var(--color-input-border)",
     borderRadius: 4,
-    color: "#E0E0E0",
+    color: "var(--color-t-primary)",
     fontSize: 12,
     padding: "2px 6px",
-    colorScheme: "dark",
+    colorScheme: "inherit",
   };
 
   return (
     <div
       className="flex items-center gap-2 rounded-card border px-2.5 py-[7px]"
-      style={{ background: "#141414", borderColor: "#242424" }}
+      style={{ background: "var(--color-inset)", borderColor: "var(--color-card-border)" }}
     >
       <input
         type="date"
@@ -292,7 +292,7 @@ function CustomRangeControls() {
       />
       <div className="grow" />
       <button
-        className="flex h-6 items-center rounded-full bg-white px-2.5 text-xs font-semibold text-black"
+        className="flex h-6 items-center rounded-full bg-action px-2.5 text-xs font-semibold text-on-action"
         disabled={state.isLoadingData}
         style={{ opacity: state.isLoadingData ? 0.55 : 1 }}
         onClick={() => void state.fetchUsageData()}
@@ -338,9 +338,9 @@ function DropdownPanel({
         left,
         width: DROPDOWN_WIDTH,
         maxHeight: DROPDOWN_MAX_HEIGHT,
-        background: "#111214",
-        borderColor: "#2E2E2E",
-        boxShadow: "0 8px 12px rgba(0,0,0,0.35)",
+        background: "var(--color-dropdown)",
+        borderColor: "var(--color-card-border)",
+        boxShadow: "var(--shadow-dropdown)",
       }}
     >
       {dimension === "model" ? (
@@ -414,7 +414,7 @@ function ModelOptions({
                 <ChevronDown
                   size={9}
                   strokeWidth={3}
-                  color="#616161"
+                  color="var(--color-t-tertiary)"
                   className="transition-transform duration-150"
                   style={{ transform: isExpanded ? "rotate(180deg)" : undefined }}
                 />
@@ -470,22 +470,22 @@ function CheckRowContent({
   return (
     <div
       className="flex h-7 w-full items-center gap-[7px] px-2.5"
-      style={{ background: on ? "#1A1A1A" : "transparent", paddingLeft: 10 + indent }}
+      style={{ background: on ? "var(--color-filter-row)" : "transparent", paddingLeft: 10 + indent }}
     >
       <span
         className="flex h-[13px] w-[13px] shrink-0 items-center justify-center rounded-[3px]"
         style={{
-          background: on ? "#FFFFFF" : "transparent",
-          border: on ? "none" : "1px solid #616161",
+          background: on ? "var(--color-action)" : "transparent",
+          border: on ? "none" : "1px solid var(--color-input-border)",
         }}
       >
-        {isSelected && <Check size={9} strokeWidth={3.5} color="#000000" />}
-        {!isSelected && isMixed && <span className="h-[1.5px] w-[7px] bg-black" />}
+        {isSelected && <Check size={9} strokeWidth={3.5} color="var(--color-on-action)" />}
+        {!isSelected && isMixed && <span className="h-[1.5px] w-[7px] bg-on-action" />}
       </span>
       <MiddleTruncateLabel
         label={title}
         className="min-w-0 text-xs"
-        style={{ color: on ? "#FFFFFF" : "#9E9E9E" }}
+        style={{ color: on ? "var(--color-t-primary)" : "var(--color-t-muted)" }}
       />
     </div>
   );

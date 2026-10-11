@@ -379,7 +379,11 @@ export interface AppStatus {
 }
 
 /** App settings persisted by Rust (mirrors UserDefaults keys). */
+export type ThemePreference = "system" | "light" | "dark";
+
 export interface AppSettings {
+  /** Missing in settings written by older versions. */
+  themePreference?: ThemePreference;
   showCostInTray: boolean;
   showTokensInTray: boolean;
   codexRateLimitEnabled: boolean;

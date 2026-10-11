@@ -1,6 +1,7 @@
 @import "@fontsource/jetbrains-mono/400.css";
 @import "@fontsource/jetbrains-mono/500.css";
 @import "@fontsource/jetbrains-mono/700.css";
+@import "./themes.css";
 
 @tailwind base;
 @tailwind components;
@@ -90,12 +91,12 @@ body {
   }
 }
 .spinner {
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  border-top-color: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid var(--color-spinner-track);
+  border-top-color: var(--color-spinner-head);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
 .spinner-dark {
-  border-color: rgba(0, 0, 0, 0.2);
-  border-top-color: rgba(0, 0, 0, 0.75);
+  border-color: var(--color-action-spinner-track);
+  border-top-color: var(--color-action-spinner-head);
 }

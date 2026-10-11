@@ -101,6 +101,7 @@ export interface AppStateValue {
 const AppStateContext = createContext<AppStateValue | null>(null);
 
 const DEFAULT_SETTINGS: AppSettings = {
+  themePreference: "system",
   showCostInTray: true,
   showTokensInTray: false,
   codexRateLimitEnabled: true,

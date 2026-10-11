@@ -1,0 +1,133 @@
+/* Neutral surfaces retain the original layout; green/blue keep their meaning.
+   Light-mode accents are darker so small text remains readable on white. */
+:root {
+  color-scheme: light;
+  --color-app: #f5f5f5;
+  --color-card: #ffffff;
+  --color-card-border: #d4d4d4;
+  --color-filter-row: #e8e8e8;
+  --color-t-primary: #202020;
+  --color-t-secondary: #525252;
+  --color-t-tertiary: #606060;
+  --color-t-muted: #5e5e5e;
+  --color-cost: #167544;
+  --color-active: #245bc4;
+  --color-link: #185fba;
+  --color-danger: #c62828;
+  --color-quota-warn: #936000;
+  --color-quota-critical: #c62828;
+  --color-settings: #f3f3f5;
+  --color-settings-panel: #ffffff;
+  --color-settings-border: #d4d4d8;
+  --color-button: #e4e4e7;
+  --color-input: #ffffff;
+  --color-input-border: #a3a3a3;
+  --color-focus: #245bc4;
+  --color-hover-border: #a3a3a3;
+  --color-pressed: #ededed;
+  --color-segment: #dedede;
+  --color-selected: #ffffff;
+  --color-filter-active: #e2e2e2;
+  --color-inset: #ededed;
+  --color-dropdown: #ffffff;
+  --color-tooltip: #ffffff;
+  --color-action: #262626;
+  --color-on-action: #ffffff;
+  --color-on-danger: #ffffff;
+  --color-toggle-on: #21853f;
+  --color-toggle-thumb: #ffffff;
+  --color-quota-normal: #525252;
+  --color-track: #dedede;
+  --color-elapsed-fill: #737373;
+  --color-elapsed-track: #e5e5e5;
+  --color-chart-output: #404040;
+  --color-chart-input: #858585;
+  --color-chart-cached: #b8b8b8;
+  --color-loading: rgba(255, 255, 255, 0.94);
+  --color-spinner-track: rgba(32, 32, 32, 0.2);
+  --color-spinner-head: #525252;
+  --color-action-spinner-track: rgba(255, 255, 255, 0.25);
+  --color-action-spinner-head: #ffffff;
+  --shadow-tooltip: 0 2px 5px rgba(0, 0, 0, 0.16);
+  --shadow-dropdown: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-app: #0a0a0a;
+  --color-card: #171717;
+  --color-card-border: #292929;
+  --color-filter-row: #1a1a1a;
+  --color-t-primary: #ffffff;
+  --color-t-secondary: #b3b3b3;
+  --color-t-tertiary: #999999;
+  --color-t-muted: #a1a1a1;
+  --color-cost: #33cc80;
+  --color-active: #6199ff;
+  --color-link: #66b3ff;
+  --color-danger: #ff6b6b;
+  --color-quota-warn: #f59e0b;
+  --color-quota-critical: #ff6b6b;
+  --color-settings: #1c1c1e;
+  --color-settings-panel: #2a2a2c;
+  --color-settings-border: #3a3a3c;
+  --color-button: #48484a;
+  --color-input: #1c1c1e;
+  --color-input-border: #616161;
+  --color-focus: #6199ff;
+  --color-hover-border: #616161;
+  --color-pressed: #1d1d1d;
+  --color-segment: #292929;
+  --color-selected: #474747;
+  --color-filter-active: #292929;
+  --color-inset: #141414;
+  --color-dropdown: #111214;
+  --color-tooltip: #000000;
+  --color-action: #ffffff;
+  --color-on-action: #000000;
+  --color-on-danger: #000000;
+  --color-toggle-on: #34c759;
+  --color-toggle-thumb: #ffffff;
+  --color-quota-normal: #d9d9d9;
+  --color-track: rgba(255, 255, 255, 0.18);
+  --color-elapsed-fill: rgba(255, 255, 255, 0.42);
+  --color-elapsed-track: rgba(255, 255, 255, 0.14);
+  --color-chart-output: rgba(255, 255, 255, 0.9);
+  --color-chart-input: rgba(255, 255, 255, 0.5);
+  --color-chart-cached: rgba(255, 255, 255, 0.24);
+  --color-loading: rgba(40, 40, 40, 0.94);
+  --color-spinner-track: rgba(255, 255, 255, 0.25);
+  --color-spinner-head: rgba(255, 255, 255, 0.85);
+  --color-action-spinner-track: rgba(0, 0, 0, 0.2);
+  --color-action-spinner-head: rgba(0, 0, 0, 0.75);
+  --shadow-tooltip: 0 2px 5px rgba(0, 0, 0, 0.5);
+  --shadow-dropdown: 0 8px 12px rgba(0, 0, 0, 0.35);
+}
+
+body {
+  background: var(--color-app);
+  color: var(--color-t-primary);
+}
+
+:root[data-window="settings"] body {
+  background: var(--color-settings);
+}
+
+input, select {
+  caret-color: var(--color-t-primary);
+}
+
+input::placeholder {
+  color: var(--color-t-tertiary);
+  opacity: 1;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-active);
+  color: var(--color-on-danger);
+}

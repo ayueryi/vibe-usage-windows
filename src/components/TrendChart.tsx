@@ -67,7 +67,7 @@ export function TrendChart() {
           {hourly ? "每小时趋势" : "每日趋势"}
         </span>
         <div className="grow" />
-        <div className="flex shrink-0 rounded-full p-0.5" style={{ background: "#292929", gap: 2 }}>
+        <div className="flex shrink-0 rounded-full p-0.5" style={{ background: "var(--color-segment)", gap: 2 }}>
           {(Object.keys(CHART_MODE_LABELS) as ChartMode[]).map((mode) => {
             const active = state.chartMode === mode;
             return (
@@ -76,8 +76,8 @@ export function TrendChart() {
                 onClick={() => state.setChartMode(mode)}
                 className="rounded-full px-2.5 py-1 text-[11px]"
                 style={{
-                  background: active ? "#474747" : "transparent",
-                  color: active ? "#FFFFFF" : "#808080",
+                  background: active ? "var(--color-selected)" : "transparent",
+                  color: active ? "var(--color-t-primary)" : "var(--color-t-muted)",
                   fontWeight: active ? 500 : 400,
                 }}
               >
@@ -237,9 +237,9 @@ function Bar({
     const cachedH = (bar.cached / maxTotal) * CHART_HEIGHT;
     return (
       <div className="flex min-w-0 flex-1 flex-col justify-end" style={{ height: CHART_HEIGHT }}>
-        <div style={{ height: outputH, background: "rgba(255,255,255,0.9)", ...topRadius }} />
-        <div style={{ height: inputH, background: "rgba(255,255,255,0.5)" }} />
-        <div style={{ height: cachedH, background: "rgba(255,255,255,0.24)" }} />
+        <div style={{ height: outputH, background: "var(--color-chart-output)", ...topRadius }} />
+        <div style={{ height: inputH, background: "var(--color-chart-input)" }} />
+        <div style={{ height: cachedH, background: "var(--color-chart-cached)" }} />
       </div>
     );
   }
@@ -248,7 +248,7 @@ function Bar({
     chartMode === "cost"
       ? (bar.cost / maxCost) * CHART_HEIGHT
       : (bar.activeMinutes / maxActiveMinutes) * CHART_HEIGHT;
-  const color = chartMode === "cost" ? "#33CC80" : "#6199FF";
+  const color = chartMode === "cost" ? "var(--color-cost)" : "var(--color-active)";
   return (
     <div className="flex min-w-0 flex-1 flex-col justify-end" style={{ height: CHART_HEIGHT }}>
       <div style={{ height: h, background: color, ...topRadius }} />
@@ -269,33 +269,33 @@ function ChartTooltip({
 }) {
   return (
     <div
-      className="pointer-events-none absolute z-10 flex flex-col gap-[3px] whitespace-nowrap rounded-card bg-black p-2 text-[11px] shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
+      className="pointer-events-none absolute z-10 flex flex-col gap-[3px] whitespace-nowrap rounded-card bg-tooltip p-2 text-[11px] shadow-[var(--shadow-tooltip)]"
       style={{
         left: x,
         top: 40,
         transform: "translate(-50%, -50%)",
-        border: "0.5px solid #333333",
+        border: "0.5px solid var(--color-card-border)",
       }}
     >
-      <span className="font-medium text-white">
+      <span className="font-medium text-t-primary">
         {hourly ? formatHourShort(bar.id) : formatDateShort(bar.id)}
       </span>
       {chartMode === "token" && (
         <>
-          <span style={{ color: "#CCCCCC" }}>总 Token: {formatNumber(barTotal(bar))}</span>
-          <span className="flex gap-2" style={{ color: "#808080" }}>
+          <span style={{ color: "var(--color-t-secondary)" }}>总 Token: {formatNumber(barTotal(bar))}</span>
+          <span className="flex gap-2" style={{ color: "var(--color-t-muted)" }}>
             <span>输入（含缓存写入）: {formatNumber(bar.input)}</span>
             <span>输出: {formatNumber(bar.output)}</span>
           </span>
           {bar.cached > 0 && (
-            <span style={{ color: "#737373" }}>缓存: {formatNumber(bar.cached)}</span>
+            <span style={{ color: "var(--color-t-tertiary)" }}>缓存: {formatNumber(bar.cached)}</span>
           )}
-          <span style={{ color: "#33CC80" }}>费用: {formatCost(bar.cost)}</span>
+          <span style={{ color: "var(--color-cost)" }}>费用: {formatCost(bar.cost)}</span>
         </>
       )}
-      {chartMode === "cost" && <span style={{ color: "#33CC80" }}>费用: {formatCost(bar.cost)}</span>}
+      {chartMode === "cost" && <span style={{ color: "var(--color-cost)" }}>费用: {formatCost(bar.cost)}</span>}
       {chartMode === "activeTime" && (
-        <span style={{ color: "#6199FF" }}>
+        <span style={{ color: "var(--color-active)" }}>
           活跃时长: {formatDuration(Math.floor(bar.activeMinutes * 60))}
         </span>
       )}

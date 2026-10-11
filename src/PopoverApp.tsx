@@ -97,7 +97,7 @@ function DashboardContent() {
         </div>
         <SummaryCards />
         <UsageCoverage />
-        <p className="text-[11px] leading-relaxed text-neutral-400">本机 Windows：{state.status?.hostname ?? "读取中"}。Token／费用仅统计已采集的会话日志，不代表订阅额度。Claude 桌面聊天及缺少本地日志的远程会话未计入。</p>
+        <p className="text-[11px] leading-relaxed text-t-muted">本机 Windows：{state.status?.hostname ?? "读取中"}。Token／费用仅统计已采集的会话日志，不代表订阅额度。Claude 桌面聊天及缺少本地日志的远程会话未计入。</p>
         <TrendChart />
         <DistributionGrid />
       </div>
@@ -114,11 +114,11 @@ function DashboardContent() {
 export function LoadingPill() {
   return (
     <div
-      className="flex items-center gap-2 rounded-full border border-white/10 px-3 py-2 shadow-[0_5px_10px_rgba(0,0,0,0.28)] backdrop-blur-md"
-      style={{ background: "rgba(40,40,40,0.6)" }}
+      className="flex items-center gap-2 rounded-full border border-input-border px-3 py-2 shadow-[0_5px_10px_rgba(0,0,0,0.28)] backdrop-blur-md"
+      style={{ background: "var(--color-loading)" }}
     >
       <div className="spinner h-3.5 w-3.5" />
-      <span className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.66)" }}>
+      <span className="text-xs font-medium" style={{ color: "var(--color-t-secondary)" }}>
         加载中
       </span>
     </div>
@@ -158,7 +158,7 @@ function SkeletonBlock({ height, className = "" }: { height: number; className?:
 function EmptyState() {
   return (
     <div className="flex h-[200px] w-full flex-col items-center justify-center gap-3">
-      <Inbox size={32} color="#4D4D4D" strokeWidth={1.5} />
+      <Inbox size={32} color="var(--color-t-tertiary)" strokeWidth={1.5} />
       <div className="text-[15px] font-medium text-t-muted">暂无数据</div>
       <div className="text-[13px] text-t-tertiary">使用 AI 编程工具后数据将自动同步</div>
     </div>

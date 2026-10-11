@@ -21,7 +21,7 @@ import { ProviderIcon } from "./ProviderIcon";
 
 /** Same amber as the 70–90% progress bar: "this product has a problem" reads
  *  like "this window is nearly full". */
-const WARNING_COLOR = "#F59E0B";
+const WARNING_COLOR = "var(--color-quota-warn)";
 
 export function QuotaTabStrip({
   activeProvider,
@@ -68,12 +68,12 @@ export function QuotaTabStrip({
             aria-selected={active}
             draggable
             title={help}
-            className="relative flex shrink-0 items-center justify-center rounded-[7px] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-white/50"
+            className="relative flex shrink-0 items-center justify-center rounded-[7px] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-focus"
             style={{
               width: 30,
               height: 30,
-              background: active ? "#1C1C1C" : "transparent",
-              boxShadow: active ? "inset 0 0 0 1px #444444" : undefined,
+              background: active ? "var(--color-card)" : "transparent",
+              boxShadow: active ? "inset 0 0 0 1px var(--color-hover-border)" : undefined,
               // Off products keep their slot but lose their color: the icon
               // itself carries "on / off", so a greyed tab is a product the
               // user can look at (and enable) rather than one that is gone.
@@ -133,7 +133,7 @@ export function QuotaTabStrip({
         type="button"
         aria-label="打开订阅配额设置"
         title="打开订阅配额设置"
-        className="flex shrink-0 items-center justify-center rounded-[7px] text-neutral-400 hover:text-neutral-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-white/50"
+        className="flex shrink-0 items-center justify-center rounded-[7px] text-t-muted hover:text-t-primary focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-focus"
         style={{ width: 30, height: 30 }}
         onClick={() => void api.openSettingsWindow()}
       >

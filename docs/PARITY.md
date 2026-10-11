@@ -4,6 +4,12 @@
 
 ## 视觉常量（源自 Swift 源码，落在 `tailwind.config.cjs`）
 
+Windows 外观默认跟随系统，也可在「设置 → 常规 → 外观」选择浅色或深色。
+两种主题使用 `src/styles/themes.css` 中的语义颜色；下表记录原始 macOS 深色基准。
+浅色主题使用浅灰背景、白色卡片及深色文字，并加深费用绿、活跃蓝、链接和警告颜色。
+深色主题保留原有视觉风格，提高辅助文字对比度；图表、筛选菜单、tooltip、原生标题栏随主题切换。
+主题选择保存在应用 `settings.json` 的 `themePreference`，旧配置缺失时按跟随系统处理。
+
 | Token | 值 | Swift 来源 |
 |---|---|---|
 | 面板尺寸 | 520×620，圆角 12 | `MenuBarController.panelWidth/Height`, contentView cornerRadius |

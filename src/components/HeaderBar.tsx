@@ -11,10 +11,10 @@ export function HeaderBar() {
   return (
     <div className="flex items-center gap-1.5">
       <div className="flex items-center gap-1.5">
-        <span className="text-[15px] font-bold text-white">Vibe Usage</span>
+        <span className="text-[15px] font-bold text-t-primary">Vibe Usage</span>
         {status?.isDev && (
           <span
-            className="rounded-[3px] px-1 py-px font-mono text-[10px] font-bold text-orange-400"
+            className="rounded-[3px] px-1 py-px font-mono text-[10px] font-bold text-quota-warn"
             style={{ background: "rgba(251,146,60,0.15)" }}
           >
             DEBUG
@@ -36,11 +36,11 @@ export function HeaderBar() {
 
 const btnStyle: React.CSSProperties = {
   fontSize: 11,
-  color: "#808080",
+  color: "var(--color-t-muted)",
   padding: "4px 8px",
-  background: "rgba(255,255,255,0.12)",
+  background: "var(--color-segment)",
   borderRadius: 4,
-  border: "0.5px solid rgba(255,255,255,0.18)",
+  border: "0.5px solid var(--color-card-border)",
   display: "inline-flex",
   alignItems: "center",
   gap: 3,
